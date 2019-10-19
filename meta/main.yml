@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Lorenz Werner
-  description: polybar deb package builder
+  description: rofi deb package builder
   # company:
   # Some suggested licenses:
   license: MIT
