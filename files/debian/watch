@@ -1,0 +1,4 @@
+version=3
+options=uversionmangle=s/-?(alpha|beta|rc)/~$1/i;tr/A-Z/a-z/;s/\D$/$&1/ \
+https://github.com/DaveDavenport/rofi/releases/ \
+.*/download/(?:[\d.]+(?:-?[AaBbRr]\w*)?)/rofi-([\d.]+(?:-?[AaBbRr]\w*)?)\.tar.gz

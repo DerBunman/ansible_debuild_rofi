@@ -1,0 +1,57 @@
+- name: 'Setup deb build environment'
+  import_role:
+    name: debuild
+
+- name: 'Ckeckout rofi sources {{ debuild.build_path }}'
+  git:
+    repo: '{{ debuild_rofi.git_src }}'
+    dest: '{{ debuild.build_path }}/rofi'
+    version: '{{ debuild_rofi.git_branch }}'
+    update: yes
+    clone: yes
+    force: yes
+
+- name: 'Copy debian dir'
+  copy:
+    src: debian
+    dest: '{{ debuild.build_path }}/rofi'
+
+- name: 'Generating debian/changelog'
+  command: /usr/local/bin/git_changelog.sh
+  args:
+      chdir: '{{ debuild.build_path }}/rofi'
+
+- name: 'Installing build deps'
+  command: mk-build-deps -i -t "apt-get -o Debug::pkgProblemResolver=yes --yes --no-install-recommends"
+  args:
+      chdir: '{{ debuild.build_path }}/rofi'
+
+- name: 'Building deb package'
+  command: dpkg-buildpackage -rfakeroot -uc -b
+  args:
+      chdir: '{{ debuild.build_path }}/rofi'
+
+- name: 'Removing build dependencies'
+  apt:
+    name: rofi-build-deps
+    state: absent
+    autoclean: yes
+    autoremove: yes
+
+- name: 'Determine deb name.'
+  raw: cd '{{ debuild.build_path }}/rofi' && echo "rofi_$(dpkg-parsechangelog --show-field version)_$(dpkg-architecture -qDEB_BUILD_ARCH).deb"
+  register: deb
+
+- name: 'Set deb name to {{ deb.stdout }}'
+  set_fact:
+    deb='{{ debuild.build_path }}/{{ deb.stdout | trim }}'
+
+- name: 'Install a .deb package'
+  apt:
+    deb: '{{ deb }}'
+
+- name: 'Delete build dir'
+  file:
+    path: '{{ debuild.build_path }}'
+    state: absent
+
