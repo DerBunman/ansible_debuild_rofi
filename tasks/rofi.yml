@@ -1,7 +1,3 @@
-- name: 'Setup deb build environment'
-  import_role:
-    name: derbunman.debuild
-
 - name: 'Ckeckout rofi sources {{ debuild.build_path }}'
   git:
     repo: '{{ debuild_rofi.git_src }}'
