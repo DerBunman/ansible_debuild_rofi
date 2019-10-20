@@ -1,7 +1,7 @@
 # Build and install rofi
 - name: "Collecting installed packages"
   package_facts:
-    manager: "auto"
+    manager: "apt"
 
 - name: "Checking rofi installation status."
   shell: dpkg-query --showformat='dpkg --compare-versions "${Version}" "ge" "{{ debuild_rofi.git_branch }}"' -W rofi | sh
