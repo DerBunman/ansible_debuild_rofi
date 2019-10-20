@@ -10,6 +10,7 @@
     update: yes
     clone: yes
     force: yes
+  changed_when: false
 
 - name: 'Copy debian dir'
   copy:
@@ -20,16 +21,19 @@
   command: /usr/local/bin/git_changelog.sh
   args:
       chdir: '{{ debuild.build_path }}/rofi'
+  changed_when: false
 
 - name: 'Installing build deps'
   command: mk-build-deps -i -t "apt-get -o Debug::pkgProblemResolver=yes --yes --no-install-recommends"
   args:
       chdir: '{{ debuild.build_path }}/rofi'
+  changed_when: false
 
 - name: 'Building deb package'
   command: dpkg-buildpackage -rfakeroot -uc -b
   args:
       chdir: '{{ debuild.build_path }}/rofi'
+  changed_when: false
 
 - name: 'Removing build dependencies'
   apt:
@@ -37,14 +41,17 @@
     state: absent
     autoclean: yes
     autoremove: yes
+  changed_when: false
 
 - name: 'Determine deb name.'
   raw: cd '{{ debuild.build_path }}/rofi' && echo "rofi_$(dpkg-parsechangelog --show-field version)_$(dpkg-architecture -qDEB_BUILD_ARCH).deb"
   register: deb
+  changed_when: false
 
 - name: 'Set deb name to {{ deb.stdout }}'
   set_fact:
     deb='{{ debuild.build_path }}/{{ deb.stdout | trim }}'
+  changed_when: false
 
 - name: 'Install a .deb package'
   apt:
@@ -54,4 +61,5 @@
   file:
     path: '{{ debuild.build_path }}'
     state: absent
+  changed_when: false
 

@@ -3,6 +3,7 @@
   shell: dpkg-query --showformat='dpkg --compare-versions "${Version}" "ge" "{{ debuild_rofi.git_branch }}"' -W rofi | sh
   register: rofi_status
   ignore_errors: true
+  changed_when: false
 
 - name: 'Building rofi.'
   import_tasks: rofi.yml
@@ -10,3 +11,4 @@
     GITREV: '{{ debuild_rofi.git_branch }}'
     GIT_URL: '{{ debuild_rofi.git_src }}'
   when: rofi_status.rc != 0
+  changed_when: false
