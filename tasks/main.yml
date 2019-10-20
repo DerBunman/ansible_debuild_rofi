@@ -1,4 +1,7 @@
 # Build and install rofi
+- name: 'Refresh facts'
+  gather_facts:
+
 - name: "Collecting installed packages"
   package_facts:
     manager: "apt"
