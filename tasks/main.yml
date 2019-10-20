@@ -1,8 +1,13 @@
 # Build and install rofi
+- name: "Collecting installed packages"
+  package_facts:
+    manager: "auto"
+
 - name: "Checking rofi installation status."
   shell: dpkg-query --showformat='dpkg --compare-versions "${Version}" "ge" "{{ debuild_rofi.git_branch }}"' -W rofi | sh
   register: rofi_status
   ignore_errors: true
+  when: "'rofi' in ansible_facts.packages"
   changed_when: false
 
 - name: 'Building rofi.'
@@ -10,5 +15,5 @@
   environment:
     GITREV: '{{ debuild_rofi.git_branch }}'
     GIT_URL: '{{ debuild_rofi.git_src }}'
-  when: rofi_status.rc != 0
+  when: "'rofi' not in ansible_facts.packages or rofi_status.rc != 0"
   changed_when: false
