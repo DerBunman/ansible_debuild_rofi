@@ -46,9 +46,9 @@
   changed_when: false
 
 - name: 'Determine deb name.'
-  raw: >
-    cd '{{ debuild.build_path }}/rofi' 
-    echo "rofi_$(dpkg-parsechangelog --show-field version)_$(dpkg-architecture -qDEB_BUILD_ARCH).deb"
+  shell: echo "rofi_$(dpkg-parsechangelog --show-field version)_$(dpkg-architecture -qDEB_BUILD_ARCH).deb"
+  args:
+    chdir: "{{ debuild.build_path }}/rofi"
   register: deb
   changed_when: false
 
