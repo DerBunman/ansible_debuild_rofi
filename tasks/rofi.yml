@@ -1,4 +1,4 @@
-- name: 'Ckeckout rofi sources {{ debuild.build_path }}'
+- name: 'Checkout rofi sources {{ debuild.build_path }}'
   git:
     repo: '{{ debuild_rofi.git_src }}'
     dest: '{{ debuild.build_path }}/rofi'
